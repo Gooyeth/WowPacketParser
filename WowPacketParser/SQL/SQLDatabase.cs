@@ -81,8 +81,7 @@ namespace WowPacketParser.SQL
                 throw new DataException("Cannot get DB data without an active DB connection.");
 
             foreach (var objectType in ObjectTypes)
-                NameStores.Add(objectType, GetDict<int, string>(
-                    $"SELECT `Id`, `Name` FROM `ObjectNames` WHERE `ObjectType`='{objectType}';"));
+                NameStores.Add(objectType, GetDict<int, string>(string.Format("SELECT `Id`, `Name` FROM `ObjectNames` WHERE `ObjectType`='{0}';", objectType)));
         }
 
         /// <summary>
@@ -106,7 +105,7 @@ namespace WowPacketParser.SQL
 
             var endTime = DateTime.Now;
             var span = endTime.Subtract(startTime);
-            Trace.WriteLine($"SQL loaded in {span.ToFormattedString()}.");
+            Trace.WriteLine(String.Format("SQL loaded in {0}.", span.ToFormattedString()));
         }
 
         /// <summary>
@@ -114,9 +113,8 @@ namespace WowPacketParser.SQL
         /// </summary>
         private static void LoadBroadcastText()
         {
-            string query =
-                $"SELECT ID, Language, MaleText, FemaleText, EmoteID1, EmoteID2, EmoteID3, EmoteDelay1, EmoteDelay2, EmoteDelay3, SoundId, UnkEmoteID, Type FROM {Settings.HotfixesDatabase}.broadcast_text;";
-            using (var reader = SQLConnector.ExecuteQuery(query))
+            var query = new StringBuilder(string.Format("SELECT ID, Language, MaleText, FemaleText, EmoteID1, EmoteID2, EmoteID3, EmoteDelay1, EmoteDelay2, EmoteDelay3, SoundId, UnkEmoteID, Type FROM {0}.broadcast_text;", Settings.HotfixesDatabase));
+            using (var reader = SQLConnector.ExecuteQuery(query.ToString()))
             {
                 if (reader == null)
                     return;
@@ -154,9 +152,9 @@ namespace WowPacketParser.SQL
         /// </summary>
         private static void LoadCreatureDifficulty()
         {
-            string query =
-                $"SELECT ID, CreatureID, FactionID, Expansion, MinLevel, MaxLevel, Flags1, Flags2, Flags3, Flags4, Flags5 FROM {Settings.HotfixesDatabase}.creature_difficulty;";
-            using (var reader = SQLConnector.ExecuteQuery(query))
+            //                                                  0       1           2           3       4           5       6       7       8       9       10
+            var query = new StringBuilder(string.Format("SELECT ID, CreatureID, FactionID, Expansion, MinLevel, MaxLevel, Flags1, Flags2, Flags3, Flags4, Flags5 FROM {0}.creature_difficulty;", Settings.HotfixesDatabase));
+            using (var reader = SQLConnector.ExecuteQuery(query.ToString()))
             {
                 if (reader == null)
                     return;
@@ -188,10 +186,12 @@ namespace WowPacketParser.SQL
         /// </summary>
         private static void LoadQuestTemplateLocale()
         {
-            string query = "SELECT Id, locale, " +
-                        "LogTitle, LogDescription, QuestDescription, AreaDescription, PortraitGiverText, PortraitGiverName, PortraitTurnInText, PortraitTurnInName, QuestCompletionLog, VerifiedBuild" +
-                        $" FROM {Settings.TDBDatabase}.quest_template_locale;";
-            using (var reader = SQLConnector.ExecuteQuery(query))
+            //                                                  0       1
+            var query = new StringBuilder(string.Format("SELECT Id, locale, " +
+            //  2            3                 4                5                 6                  7                   8                   9                  10              11
+            "LogTitle, LogDescription, QuestDescription, AreaDescription, PortraitGiverText, PortraitGiverName, PortraitTurnInText, PortraitTurnInName, QuestCompletionLog, VerifiedBuild" +
+            " FROM {0}.quest_template_locale;", Settings.TDBDatabase));
+            using (var reader = SQLConnector.ExecuteQuery(query.ToString()))
             {
                 if (reader == null)
                     return;
@@ -224,9 +224,9 @@ namespace WowPacketParser.SQL
         /// </summary>
         private static void LoadQuestObjectivesLocale()
         {
-            string query =
-                $"SELECT Id, locale, QuestId, StorageIndex, Description, VerifiedBuild FROM {Settings.TDBDatabase}.quest_objectives_locale;";
-            using (var reader = SQLConnector.ExecuteQuery(query))
+            //                                                  0      1       2          3             4            5
+            var query = new StringBuilder(string.Format("SELECT Id, locale, QuestId, StorageIndex, Description, VerifiedBuild FROM {0}.quest_objectives_locale;", Settings.TDBDatabase));
+            using (var reader = SQLConnector.ExecuteQuery(query.ToString()))
             {
                 if (reader == null)
                     return;
@@ -253,9 +253,9 @@ namespace WowPacketParser.SQL
         /// </summary>
         private static void LoadBroadcastTextLocale()
         {
-            string query =
-                $"SELECT Id, locale, MaleText_lang, FemaleText_lang, VerifiedBuild FROM {Settings.HotfixesDatabase}.broadcast_text_locale;";
-            using (var reader = SQLConnector.ExecuteQuery(query))
+            //                                                  0   1       2              3                4
+            var query = new StringBuilder(string.Format("SELECT Id, locale, MaleText_lang, FemaleText_lang, VerifiedBuild FROM {0}.broadcast_text_locale;", Settings.HotfixesDatabase));
+            using (var reader = SQLConnector.ExecuteQuery(query.ToString()))
             {
                 if (reader == null)
                     return;
@@ -281,8 +281,9 @@ namespace WowPacketParser.SQL
         /// </summary>
         private static void LoadMapDifficulty()
         {
-            string query = $"SELECT ID, MapID, DifficultyID FROM {Settings.WPPDatabase}.map_difficulty;";
-            using (var reader = SQLConnector.ExecuteQuery(query))
+            //                                                  0     1        2
+            var query = new StringBuilder(string.Format("SELECT ID, MapID, DifficultyID FROM {0}.map_difficulty;", Settings.WPPDatabase));
+            using (var reader = SQLConnector.ExecuteQuery(query.ToString()))
             {
                 if (reader == null)
                     return;

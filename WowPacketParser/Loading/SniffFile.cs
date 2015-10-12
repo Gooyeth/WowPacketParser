@@ -35,7 +35,7 @@ namespace WowPacketParser.Loading
         public SniffFile(string fileName, DumpFormatType dumpFormat = DumpFormatType.Text, Tuple<int, int> number = null)
         {
             if (string.IsNullOrWhiteSpace(fileName))
-                throw new ArgumentException("fileName cannot be null, empty or whitespace.", nameof(fileName));
+                throw new ArgumentException("fileName cannot be null, empty or whitespace.", "fileName");
 
             _stats = new Statistics();
 
@@ -43,9 +43,9 @@ namespace WowPacketParser.Loading
             _dumpFormat = dumpFormat;
 
             if (number == null)
-                _logPrefix = $"[{Path.GetFileName(FileName)}]";
+                string.Format("[{0}]", Path.GetFileName(FileName));
             else
-                _logPrefix = $"[{number.Item1}/{number.Item2} {Path.GetFileName(FileName)}]";
+                _logPrefix = string.Format("[{0}/{1} {2}]", number.Item1, number.Item2, Path.GetFileName(FileName));
         }
 
         private string FileName
@@ -141,7 +141,7 @@ namespace WowPacketParser.Loading
                     {
                         // If our dump format requires a .txt to be created,
                         // check if we can write to that .txt before starting parsing
-                        Trace.WriteLine($"Save file {outFileName} is in use, parsing will not be done.");
+                        Trace.WriteLine(string.Format("Save file {0} is in use, parsing will not be done.", outFileName));
                         break;
                     }
 
@@ -341,7 +341,7 @@ namespace WowPacketParser.Loading
                 {
                     if (_compression != FileCompression.None)
                     {
-                        Trace.WriteLine($"Skipped compressing file {FileName}");
+                        Trace.WriteLine("Skipped compressing file {0}", FileName);
                         break;
                     }
 
@@ -568,7 +568,7 @@ namespace WowPacketParser.Loading
                         originalFileStream.CopyTo(compressionStream);
                     }
 
-                    Trace.WriteLine($"{_logPrefix} Compressed {fileToCompress.Name} from {fileToCompress.Length} to {compressedFileStream.Length} bytes.");
+                    //Trace.WriteLine($"{_logPrefix} Compressed {fileToCompress.Name} from {fileToCompress.Length} to {compressedFileStream.Length} bytes.");
                 }
             }
         }
@@ -592,11 +592,12 @@ namespace WowPacketParser.Loading
                             }
                             break;
                         default:
-                            throw new NotImplementedException($"Invalid decompression method for {fileToDecompress.Name}");
+                            break;
+                            //throw new NotImplementedException($"Invalid decompression method for {fileToDecompress.Name}");
                     }
                 }
 
-                Trace.WriteLine($"{_logPrefix} Decompressed {fileToDecompress.Name} to {Path.GetFileName(newFileName)}");
+                //Trace.WriteLine($"{_logPrefix} Decompressed {fileToDecompress.Name} to {Path.GetFileName(newFileName)}");
                 return newFileName;
             }
         }

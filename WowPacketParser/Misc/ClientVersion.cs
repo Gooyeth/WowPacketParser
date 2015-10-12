@@ -290,8 +290,8 @@ namespace WowPacketParser.Misc
             UpdateFields.ResetUFDictionaries();
             try
             {
-                var asm = Assembly.Load($"WowPacketParserModule.{VersionDefiningBuild}");
-                Trace.WriteLine($"Loading module WowPacketParserModule.{VersionDefiningBuild}.dll");
+                var asm = Assembly.LoadFrom(string.Format(AppDomain.CurrentDomain.BaseDirectory + "/Parsers/" + "WowPacketParserModule.{0}.dll", VersionDefiningBuild));
+                Trace.WriteLine(string.Format("Loading module WowPacketParserModule.{0}.dll", VersionDefiningBuild));
 
                 Handler.LoadHandlers(asm, VersionDefiningBuild);
                 Handler.LoadBattlenetHandlers(asm);
